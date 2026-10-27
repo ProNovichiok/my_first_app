@@ -1,0 +1,6 @@
+# Replace with your real domain. DNS A/AAAA must point to your server in Russia.
+rental.example.invalid {
+    reverse_proxy app:3000
+    header Referrer-Policy no-referrer
+    # Do not enable access logs with request bodies, tokens or document data.
+}

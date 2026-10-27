@@ -1,0 +1,18 @@
+{
+  "brand": "Балтик Драйв",
+  "legalName": "ДЕМО — арендодатель не указан",
+  "inn": "",
+  "ogrn": "",
+  "address": "Калининград, демонстрационный пункт выдачи",
+  "email": "demo@example.invalid",
+  "phone": "Не указан",
+  "bankDetails": "Заполнить перед запуском",
+  "pickupAddress": "Калининград — адрес согласуется при подтверждении",
+  "minAge": 21,
+  "minExperienceYears": 2,
+  "mileagePerDay": 250,
+  "extraKmPrice": 15,
+  "privacyVersion": "2026-10-27-v1",
+  "consentVersion": "2026-10-27-v1",
+  "applicationRetentionDays": 30
+}
