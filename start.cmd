@@ -1,19 +1,15 @@
 @echo off
 chcp 65001 >nul
 cd /d "%~dp0"
-where node >nul 2>nul
-if errorlevel 1 (
- echo Установите Node.js 24 LTS с https://nodejs.org/
+set "JAVACMD=java"
+if defined JAVA_HOME if exist "%JAVA_HOME%\bin\java.exe" set "JAVACMD=%JAVA_HOME%\bin\java.exe"
+if not defined JAVA_HOME for /d %%D in ("%ProgramFiles%\Java\jdk-*") do if exist "%%D\bin\java.exe" set "JAVACMD=%%D\bin\java.exe"
+if not defined JAVA_HOME for /d %%D in ("%ProgramFiles%\Eclipse Adoptium\jdk-*") do if exist "%%D\bin\java.exe" set "JAVACMD=%%D\bin\java.exe"
+if not exist "baltic-drive.jar" (
+ echo Сначала выполните build.cmd или скачайте готовый Java-архив.
  pause
  exit /b 1
 )
-if not exist node_modules (
- call npm ci
- if errorlevel 1 goto fail
-)
-node scripts/setup.js
-if errorlevel 1 goto fail
 echo Откройте http://localhost:3000
-node --env-file-if-exists=.env src/server.js
-:fail
+"%JAVACMD%" -Dstdout.encoding=UTF-8 -Dstderr.encoding=UTF-8 -jar baltic-drive.jar
 pause

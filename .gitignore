@@ -1,11 +1,12 @@
-node_modules/
+target/
 .env
 .env.*
 !.env.example
 data/
 private/
 *.sqlite*
-coverage/
 *.log
 *.zip
-.pnpm-store/
+.tools/
+*.pid
+baltic-drive.jar

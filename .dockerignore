@@ -1,8 +1,7 @@
-node_modules
+target
 .env
-.env.*
 data
 private
 .git
-test
 *.zip
+baltic-drive.jar
