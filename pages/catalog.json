@@ -1,0 +1,64 @@
+{
+  "demo": true,
+  "brand": "Балтик Драйв",
+  "cars": [
+    {
+      "id": "solaris",
+      "name": "Hyundai Solaris",
+      "class": "Комфорт",
+      "year": 2021,
+      "price": 2500,
+      "deposit": 10000,
+      "gearbox": "Автомат",
+      "fuel": "Бензин",
+      "seats": 5,
+      "color": "#c2c6c3",
+      "demo": true
+    },
+    {
+      "id": "rio",
+      "name": "Kia Rio",
+      "class": "Город",
+      "year": 2021,
+      "price": 2300,
+      "deposit": 10000,
+      "gearbox": "Автомат",
+      "fuel": "Бензин",
+      "seats": 5,
+      "color": "#c96f4d",
+      "demo": true
+    },
+    {
+      "id": "polo",
+      "name": "Volkswagen Polo",
+      "class": "Комфорт",
+      "year": 2022,
+      "price": 2800,
+      "deposit": 12000,
+      "gearbox": "Автомат",
+      "fuel": "Бензин",
+      "seats": 5,
+      "color": "#536d70",
+      "demo": true
+    },
+    {
+      "id": "creta",
+      "name": "Hyundai Creta",
+      "class": "Кроссовер",
+      "year": 2022,
+      "price": 3500,
+      "deposit": 15000,
+      "gearbox": "Автомат",
+      "fuel": "Бензин",
+      "seats": 5,
+      "color": "#8c9690",
+      "demo": true
+    }
+  ],
+  "company": {
+    "minAge": 21,
+    "minExperienceYears": 2,
+    "mileagePerDay": 250,
+    "extraKmPrice": 15
+  }
+}
