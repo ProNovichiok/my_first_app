@@ -11,6 +11,12 @@ road.innerHTML=`<div class="music-road-line" aria-hidden="true"></div>${tracks.m
 document.body.append(road);
 startCarMotion(road);
 const cars=[...road.querySelectorAll('.music-car')],stop=road.querySelector('.music-stop'),status=road.querySelector('[role=status]');
+const player=document.createElement('section');player.className='music-player';player.setAttribute('aria-label','Управление мелодиями');
+player.innerHTML=`<button class="music-player-toggle" type="button" aria-label="Музыка — выбор мелодии" aria-expanded="false" aria-controls="music-player-body">♫ Музыка</button><div id="music-player-body" class="music-player-body" hidden><p class="eyebrow">МУЗЫКА В ДОРОГУ</p><p class="music-now">Выберите настроение поездки</p><div class="music-track-list">${tracks.map(t=>`<button class="music-track" type="button" data-track="${t.id}" aria-label="Мелодия: ${t.style}" aria-pressed="false">▶ ${t.name} · ${t.style}</button>`).join('')}</div><label class="music-volume-label">Громкость <output>45%</output><input class="music-volume" type="range" min="0" max="100" value="45" aria-label="Громкость музыки"></label><p class="music-player-tip">Звук включается только по нажатию.</p></div>`;
+road.append(player);const playerToggle=player.querySelector('.music-player-toggle'),playerBody=player.querySelector('.music-player-body'),trackButtons=[...player.querySelectorAll('[data-track]')],volume=player.querySelector('.music-volume');playerBody.append(stop);
+function openPlayer(open){playerBody.hidden=!open;playerToggle.setAttribute('aria-expanded',String(open));}
+playerToggle.addEventListener('click',()=>openPlayer(playerBody.hidden));
+player.addEventListener('keydown',e=>{if(e.key==='Escape'){openPlayer(false);playerToggle.focus();}});
 let context,master,timer=null,active=null,busy=false,next=0,step=0;
 const voices=new Set(),frequency=n=>440*2**((n-69)/12);
 function note(midi,when,length,volume,type='triangle'){
@@ -37,6 +43,8 @@ function showState(){
  cars.forEach((car,i)=>{const t=tracks[i],on=active===t;car.setAttribute('aria-pressed',String(on));car.setAttribute('aria-label',`${t.name} — ${on?'выключить':'включить'} ${t.style}`);car.classList.toggle('is-playing',on);});
  stop.hidden=!active;stop.textContent=active?`♫ ${active.name}: ${active.style} · выключить`:'♫ Выключить музыку';
  status.textContent=active?`Играет ${active.name}: ${active.style}. Нажмите другую машинку для смены музыки.`:'Музыка выключена.';
+ trackButtons.forEach((button,i)=>{const t=tracks[i],on=active===t;button.setAttribute('aria-pressed',String(on));button.classList.toggle('selected',on);button.textContent=`${on?'Ⅱ':'▶'} ${t.name} · ${t.style}`;});
+ player.querySelector('.music-now').textContent=active?`Сейчас играет: ${active.style}`:'Выберите настроение поездки';playerToggle.textContent=active?`♫ Музыка · ${active.style}`:'♫ Музыка';
 }
 async function selectTrack(track){
  if(busy)return;busy=true;
@@ -44,14 +52,16 @@ async function selectTrack(track){
   const same=active===track;silence();
   if(same||!track){active=null;if(context)await context.suspend();}
   else{
-   if(!context){const Audio=window.AudioContext||window.webkitAudioContext;if(!Audio)throw Error('Ваш браузер не поддерживает музыку.');context=new Audio();master=context.createGain();master.gain.value=.18;master.connect(context.destination);}
+   if(!context){const Audio=window.AudioContext||window.webkitAudioContext;if(!Audio)throw Error('Ваш браузер не поддерживает музыку.');context=new Audio();master=context.createGain();master.gain.value=Number(volume.value)/100*.65;master.connect(context.destination);}
    await context.resume();if(context.state!=='running')throw Error('Не удалось включить звук. Нажмите ещё раз.');active=track;step=0;run();
   }
   showState();
- }catch(error){active=null;silence();showState();status.textContent=error.message;}
+ }catch(error){active=null;silence();showState();status.textContent=error.message;player.querySelector('.music-now').textContent=error.message;openPlayer(true);}
  finally{busy=false;}
 }
-cars.forEach((car,i)=>car.addEventListener('click',()=>selectTrack(tracks[i])));stop.addEventListener('click',()=>selectTrack(null));
+cars.forEach((car,i)=>car.addEventListener('click',()=>{openPlayer(true);selectTrack(tracks[i]);}));stop.addEventListener('click',()=>selectTrack(null));
+trackButtons.forEach((button,i)=>button.addEventListener('click',()=>selectTrack(tracks[i])));
+volume.addEventListener('input',()=>{player.querySelector('output').textContent=volume.value+'%';if(master)master.gain.setTargetAtTime(Number(volume.value)/100*.65,context.currentTime,.03);});
 document.addEventListener('visibilitychange',async()=>{
  if(!context||!active)return;
  if(document.hidden){silence();await context.suspend().catch(()=>{});}
