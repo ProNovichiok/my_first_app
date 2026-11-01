@@ -83,4 +83,20 @@ public final class Bookings {
    db.execute("INSERT INTO bookings(id,car,start,end,days,total,deposit,status,expires,created,pii,consent,terms) VALUES(?,?,?,?,?,?,?,'pending',?,?,?,?,?)",id,s(car,"id"),iso(Instant.now().plus(3,ChronoUnit.DAYS)),iso(Instant.now().plus(6,ChronoUnit.DAYS)),3,num(car,"price")*3,num(car,"deposit"),System.currentTimeMillis()+86400000,System.currentTimeMillis(),db.encrypt(person),str(obj("at",iso(Instant.now()),"version",c.company.path("consentVersion"),"text",Legal.consent(c.company),"demo",true)),str(terms));db.audit(id,"demo_created");return id;
   });
  }
+
+ public ObjectNode completeDemo(String id){
+  if(!c.demo)throw new Failure(403,"Только в демо-режиме.");
+  return db.tx(()->{ObjectNode b=db.get(id);if(b==null)throw new Failure(404,"Заявка не найдена.");if(!s(b,"status").equals("hold"))return view(b);
+   var person=obj("fullName","ДЕМО — клиент Telegram","birthDate","1990-01-01","phone","+70000000000","passportSeries","0000","passportNumber","000000","passportIssuedBy","Вымышленный орган — учебный образец","passportIssuedDate","2010-01-01","passportCode","000-000","registrationAddress","Вымышленный адрес — не предоставлен клиентом","licenseNumber","0000000000","licenseIssuedDate","2020-01-01","licenseExpires","2035-01-01","drivingSince","2010-01-01");
+   var consent=obj("at",iso(Instant.now()),"version","demo-no-personal-documents","text","Учебный образец. Настоящие документы не запрашивались; вымышленные данные созданы системой. Эта запись не является согласием клиента на обработку документов.","demo",true);
+   db.execute("UPDATE bookings SET pii=?,consent=?,status='pending',expires=?,form_hash=NULL,claim_hash=NULL WHERE id=?",db.encrypt(person),str(consent),System.currentTimeMillis()+86400000,id);db.audit(id,"demo_selection_received");return view(db.get(id));
+  });
+ }
+ public static ObjectNode decodeDemoLink(String payload){
+  try{if(!payload.matches("d1-[a-z0-9]{1,24}-[a-z0-9]{1,10}-[a-z0-9]{1,10}"))throw new Exception();String[] p=payload.split("-");long a=Math.multiplyExact(Long.parseLong(p[2],36),60000),b=Math.multiplyExact(Long.parseLong(p[3],36),60000);String start=Instant.ofEpochMilli(a).atZone(ZONE).toLocalDateTime().format(DateTimeFormatter.ofPattern("uuuu-MM-dd'T'HH:mm")),end=Instant.ofEpochMilli(b).atZone(ZONE).toLocalDateTime().format(DateTimeFormatter.ofPattern("uuuu-MM-dd'T'HH:mm"));dates(start,end,Instant.now());return obj("car",p[1],"start",start,"end",end);}catch(Failure e){throw e;}catch(Exception e){throw new Failure(400,"Учебная ссылка повреждена. Выберите автомобиль и даты на сайте заново.");}
+ }
+ public ObjectNode acceptDemoLink(String payload,String chat){
+  if(!c.demo)throw new Failure(403,"Только в демо-режиме.");ObjectNode input=decodeDemoLink(payload),period=dates(s(input,"start"),s(input,"end"),Instant.now());c.car(s(input,"car"));
+  synchronized(db){db.expire();ObjectNode old=db.one("SELECT * FROM bookings WHERE chat_hash=? AND car=? AND start=? AND end=? AND status NOT IN ('cancelled','expired') ORDER BY created DESC LIMIT 1",hash(chat),s(input,"car"),s(period,"start"),s(period,"end"));if(old!=null)return view(old);ObjectNode b=create(input);String raw=java.net.URI.create(s(b,"telegramUrl")).getQuery().substring(6);claim(raw,chat);return completeDemo(s(b,"id"));}
+ }
 }

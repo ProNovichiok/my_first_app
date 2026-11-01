@@ -10,3 +10,5 @@ private/
 .tools/
 *.pid
 baltic-drive.jar
+
+asset-originals/

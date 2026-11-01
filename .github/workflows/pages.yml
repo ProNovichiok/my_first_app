@@ -4,6 +4,9 @@ on:
     branches: [main]
     paths:
       - 'pages/**'
+      - 'public/**'
+      - 'config/*.json'
+      - 'scripts/build-pages.py'
       - '.github/workflows/pages.yml'
   workflow_dispatch:
 permissions:
@@ -21,6 +24,8 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
+      - name: Prepare static demo without Node.js
+        run: python3 scripts/build-pages.py
       - uses: actions/upload-pages-artifact@v3
         with:
           name: github-pages-${{ github.run_id }}-${{ github.run_attempt }}

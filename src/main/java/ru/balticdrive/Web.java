@@ -14,7 +14,7 @@ public final class Web implements AutoCloseable {
  public final Config config;public final Database db;public final Bookings service;public final Documents docs;public final Bot bot;
  private final HttpServer server;private final ExecutorService executor=Executors.newVirtualThreadPerTaskExecutor();
  private final Limits limits=new Limits();
- public Web(Config c)throws Exception{config=c;db=new Database(c);service=new Bookings(c,db);docs=new Documents(c,db);bot=new Bot(c,db,service);server=HttpServer.create(new InetSocketAddress(c.host,c.port),128);server.setExecutor(executor);server.createContext("/",this::handle);}
+ public Web(Config c)throws Exception{config=c;db=new Database(c);service=new Bookings(c,db);docs=new Documents(c,db);bot=new Bot(c,db,service,docs);server=HttpServer.create(new InetSocketAddress(c.host,c.port),128);server.setExecutor(executor);server.createContext("/",this::handle);}
  public void start(){server.start();}
  public int port(){return server.getAddress().getPort();}
  private String header(HttpExchange x,String name){return Optional.ofNullable(x.getRequestHeaders().getFirst(name)).orElse("");}
@@ -45,8 +45,8 @@ public final class Web implements AutoCloseable {
    if(method.equals("POST")&&p.equals("/api/bookings")){limits.check("booking:"+ip(x),8,1800000);json(x,201,service.create(body(x)));return;}
    if(method.equals("GET")&&p.equals("/api/form")){ObjectNode b=Bookings.view(service.form(bearer(x)));b.put("demo",config.demo);b.put("consent",Legal.consent(config.company));b.put("consentVersion",s(config.company,"consentVersion"));json(x,200,b);return;}
    if(method.equals("POST")&&p.equals("/api/form")){limits.check("booking:"+ip(x),8,1800000);ObjectNode b=service.submit(bearer(x),body(x));b.put("filesReady",refresh(s(b,"id")));json(x,201,b);return;}
-   if(method.equals("GET")&&p.equals("/privacy")){html(x,Legal.page("Политика обработки данных",Legal.privacy(config.company),config.demo));return;}
-   if(method.equals("GET")&&p.equals("/consent")){html(x,Legal.page("Отдельное согласие",Legal.consent(config.company),config.demo));return;}
+   if(method.equals("GET")&&(p.equals("/privacy")||p.equals("/privacy.html"))){html(x,Legal.page("Политика обработки данных",Legal.privacy(config.company),config.demo));return;}
+   if(method.equals("GET")&&(p.equals("/consent")||p.equals("/consent.html"))){html(x,Legal.page("Отдельное согласие",Legal.consent(config.company),config.demo));return;}
    if(method.equals("GET")&&p.equals("/api/admin/bookings")){
     db.expire();List<ObjectNode> rows=db.rows("SELECT * FROM bookings ORDER BY created DESC LIMIT 1000");List<ObjectNode> bookings=new ArrayList<>();for(JsonNode b:rows){ObjectNode out=Bookings.view(b);JsonNode person=db.decrypt(s(b,"pii"));out.put("created",num(b,"created"));out.put("paid",num(b,"paid"));out.set("client",person.path("fullName").isMissingNode()?M.nullNode():person.path("fullName"));out.set("phone",person.path("phone").isMissingNode()?M.nullNode():person.path("phone"));out.put("hasPerson",!s(b,"pii").isBlank());bookings.add(out);}
     json(x,200,obj("demo",config.demo,"statuses",Bookings.STATUSES,"bookings",bookings,"filesDir",config.filesDir.toString()));return;
@@ -63,8 +63,8 @@ public final class Web implements AutoCloseable {
     if(method.equals("DELETE")&&action.equals("person")){docs.erase(id);json(x,200,obj("ok",true));return;}
    }
    if(!List.of("GET","HEAD").contains(method))throw new Failure(405,"Метод не поддерживается.");
-   if(p.startsWith("/api")||p.contains("..")||p.contains("\\")||Arrays.stream(p.split("/")).anyMatch(s->s.startsWith(".")))throw new Failure(404,"Страница не найдена.");
-   if(p.equals("/"))p="/index.html";try(InputStream in=Web.class.getResourceAsStream("/public"+p)){if(in==null)throw new Failure(404,"Страница не найдена.");String type=p.endsWith(".html")?"text/html; charset=utf-8":p.endsWith(".js")?"text/javascript; charset=utf-8":p.endsWith(".css")?"text/css; charset=utf-8":p.endsWith(".svg")?"image/svg+xml":"application/octet-stream";send(x,200,type,in.readAllBytes());}
+   if((p.equals("/api")||p.startsWith("/api/"))||p.contains("..")||p.contains("\\")||Arrays.stream(p.split("/")).anyMatch(s->s.startsWith(".")))throw new Failure(404,"Страница не найдена.");
+   if(p.equals("/"))p="/index.html";if(p.startsWith("/assets/"))x.getResponseHeaders().set("Cache-Control","public, max-age=86400");try(InputStream in=Web.class.getResourceAsStream("/public"+p)){if(in==null)throw new Failure(404,"Страница не найдена.");String type=p.endsWith(".html")?"text/html; charset=utf-8":p.endsWith(".js")?"text/javascript; charset=utf-8":p.endsWith(".css")?"text/css; charset=utf-8":p.endsWith(".svg")?"image/svg+xml":p.endsWith(".webp")?"image/webp":p.endsWith(".json")?"application/json; charset=utf-8":p.endsWith(".txt")?"text/plain; charset=utf-8":"application/octet-stream";send(x,200,type,in.readAllBytes());}
   }catch(Failure e){try{json(x,e.status,obj("error",e.getMessage()));}catch(IOException ignored){}}
    catch(Exception e){System.err.println("Ошибка сервера; подробности скрыты для защиты данных.");try{json(x,500,obj("error","Внутренняя ошибка. Повторите позже."));}catch(IOException ignored){}}
   finally{x.close();}

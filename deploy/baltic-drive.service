@@ -1,0 +1,21 @@
+[Unit]
+Description=Baltic Drive Java server and Telegram bot
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=rental
+WorkingDirectory=/opt/baltic-drive
+ExecStart=/usr/bin/java -Xms32m -Xmx256m -jar /opt/baltic-drive/baltic-drive.jar
+Restart=on-failure
+RestartSec=10
+UMask=0077
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ReadWritePaths=/opt/baltic-drive/data /opt/baltic-drive/private
+ProtectHome=true
+
+[Install]
+WantedBy=multi-user.target

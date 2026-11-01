@@ -11,5 +11,5 @@ if not exist "baltic-drive.jar" (
  exit /b 1
 )
 echo Откройте http://localhost:3000
-"%JAVACMD%" -Dstdout.encoding=UTF-8 -Dstderr.encoding=UTF-8 -jar baltic-drive.jar
+"%JAVACMD%" -Xms32m -Xmx256m -Dstdout.encoding=UTF-8 -Dstderr.encoding=UTF-8 -jar baltic-drive.jar
 pause
