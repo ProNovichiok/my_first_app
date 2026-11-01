@@ -11,8 +11,8 @@
 @keyframes coastal-lines{to{transform:translate3d(-320px,120px,0)}}
 .page-paused .ambient:before,.page-paused .ambient:after{animation-play-state:paused}
 @media(pointer:fine){
-body{cursor:url("./assets/cursor-key.svg") 32 32,auto}
-a,button,summary,select,[role=button]{cursor:url("./assets/cursor-key-hover.svg") 32 32,pointer}
+body{cursor:url("./assets/cursor-key.svg?v=2") 4 4,auto}
+a,button,summary,select,[role=button]{cursor:url("./assets/cursor-key-hover.svg?v=2") 4 4,pointer}
 input,textarea{cursor:text}input[type=checkbox],input[type=radio]{cursor:pointer}button:disabled{cursor:wait}
 }
 @media(max-width:650px){.routes-hero>picture{height:auto;aspect-ratio:1600/1067}.ambient:after{opacity:.45}.ambient:before{animation-duration:25s}}
@@ -25,6 +25,6 @@ input,textarea{cursor:text}input[type=checkbox],input[type=radio]{cursor:pointer
 .primary:hover{box-shadow:0 0 28px #dfad6955}
 .header nav a:hover,.text-link:hover,.hero-route:hover,.footer a:hover,.faq summary:hover{color:#f0c98e;text-shadow:0 0 14px #dfad6970}
 .car:hover{box-shadow:0 0 30px #dfad691c;border-color:#dfad6980}
-.turntable{cursor:url("./assets/cursor-key.svg") 32 32,grab}
+.turntable{cursor:url("./assets/cursor-key.svg?v=2") 4 4,grab}
 }
 @media(prefers-reduced-motion:reduce){.button,.chip,.view-card,.telegram-link,.menu-toggle{transition:none}}
