@@ -28,3 +28,27 @@ input,textarea{cursor:text}input[type=checkbox],input[type=radio]{cursor:pointer
 .turntable{cursor:url("./assets/cursor-key.svg?v=2") 4 4,grab}
 }
 @media(prefers-reduced-motion:reduce){.button,.chip,.view-card,.telegram-link,.menu-toggle{transition:none}}
+
+/* A compact musical car along the bottom edge. No animation libraries. */
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap;border:0}
+body:has(.music-road){padding-bottom:80px}
+.music-road{position:fixed;bottom:8px;left:0;right:0;height:70px;z-index:25;pointer-events:none}
+.music-road-line{position:absolute;left:0;right:0;bottom:11px;border-bottom:1px dashed #dfad6933}
+.music-car-trip{position:absolute;left:0;right:120px;bottom:3px;animation:car-cruise 32s linear infinite;will-change:transform;pointer-events:none}
+.music-car{pointer-events:auto;position:relative;display:block;width:116px;height:64px;padding:0;border:0;background:transparent;color:#efd1a3;cursor:url('./assets/cursor-key-hover.svg?v=2') 4 4,pointer;touch-action:manipulation}
+.music-car-shape{display:block;width:112px;height:52px;filter:drop-shadow(0 0 5px #6aada230);animation:car-facing 32s steps(1,end) infinite}
+.music-car-note{position:absolute;right:9px;top:-5px;font-size:18px;color:#dfad69}
+.music-car-hint{display:block;font-size:8px;letter-spacing:.4px;line-height:12px;text-align:center;color:#c7d3cc;background:#0b1216d9;border-radius:6px}
+.music-car:hover .music-car-shape,.music-car:focus-visible .music-car-shape{filter:drop-shadow(0 0 9px #dfad6999)}
+.music-car-trip:hover,.music-car-trip:focus-within,.music-car-trip:hover .music-car-shape,.music-car-trip:focus-within .music-car-shape,.page-paused .music-car-trip,.page-paused .music-car-shape{animation-play-state:paused}
+.music-playing .music-car-note{color:#a5e0c8;text-shadow:0 0 9px #6aada2}
+.music-stop{position:absolute;right:16px;bottom:72px;min-height:44px;pointer-events:auto;padding:8px 15px;border:1px solid #aa8657;border-radius:100px;background:#14232cf5;color:#efd1a3;font-size:11px;box-shadow:0 0 18px #dfad6920}
+@keyframes car-cruise{0%,100%{transform:translateX(4px)}49%,50%{transform:translateX(100%)}99%{transform:translateX(4px)}}
+@keyframes car-facing{0%,100%{transform:scaleX(1)}50%{transform:scaleX(-1)}}
+@media(max-width:650px){.music-road{bottom:4px}.music-car-trip,.music-car-shape{animation-duration:24s}.music-stop{right:12px;font-size:10px}}
+@media(prefers-reduced-motion:reduce){.music-car-trip{left:12px;animation:none;will-change:auto}.music-car-shape{animation:none}}
+
+.music-wheel{transform-box:fill-box;transform-origin:center;animation:music-wheel-spin .8s linear infinite}
+@keyframes music-wheel-spin{to{transform:rotate(360deg)}}
+.music-car-trip:hover .music-wheel,.music-car-trip:focus-within .music-wheel,.page-paused .music-wheel{animation-play-state:paused}
+@media(prefers-reduced-motion:reduce){.music-wheel{animation:none}}
