@@ -52,3 +52,14 @@ body:has(.music-road){padding-bottom:80px}
 @keyframes music-wheel-spin{to{transform:rotate(360deg)}}
 .music-car-trip:hover .music-wheel,.music-car-trip:focus-within .music-wheel,.page-paused .music-wheel{animation-play-state:paused}
 @media(prefers-reduced-motion:reduce){.music-wheel{animation:none}}
+
+/* A small convoy keeps all three musical cars reachable on narrow screens. */
+.music-car-trip{right:312px}
+.music-convoy{display:flex;gap:8px;width:304px}
+.music-convoy .music-car{width:96px;flex:0 0 96px}
+.music-convoy .music-car-shape{width:96px;height:48px}
+.music-convoy .music-car-hint{font-size:7px;letter-spacing:0;white-space:nowrap}
+.music-car.is-playing .music-car-note{color:#a5e0c8;text-shadow:0 0 9px #6aada2}
+.music-car.is-playing .music-car-shape{filter:drop-shadow(0 0 7px #dfad6988)}
+.music-car.is-playing .music-car-hint{color:#f0c98e;border-bottom:1px solid #dfad69}
+.music-stop{max-width:calc(100% - 24px)}
