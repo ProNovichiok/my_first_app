@@ -12,7 +12,7 @@ if dest.exists():
 dest.mkdir()
 # Copy only explicitly public assets; never runtime data or credentials.
 for p in source.rglob('*'):
-    if p.is_file() and p.suffix.lower() in {'.html','.css','.js','.svg','.webp','.txt','.json','.xlsx'}:
+    if p.is_file() and p.suffix.lower() in {'.html','.css','.js','.svg','.webp','.txt','.json','.xlsx','.wav'}:
         target=dest/p.relative_to(source)
         target.parent.mkdir(parents=True,exist_ok=True)
         shutil.copy2(p,target)
