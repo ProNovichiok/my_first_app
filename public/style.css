@@ -11,9 +11,20 @@
 @keyframes coastal-lines{to{transform:translate3d(-320px,120px,0)}}
 .page-paused .ambient:before,.page-paused .ambient:after{animation-play-state:paused}
 @media(pointer:fine){
-body{cursor:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Cpath d='M5 3L25 18L15 19L10 28Z' fill='%23dfad69' stroke='%230b1216' stroke-width='2' stroke-linejoin='round'/%3E%3C/svg%3E") 5 3,auto}
-a,button,summary,select,[role=button]{cursor:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32'%3E%3Ccircle cx='16' cy='16' r='11' fill='%230b1216' stroke='%23dfad69' stroke-width='2'/%3E%3Cpath d='M11 21L21 11M11 11H21V21' fill='none' stroke='%23dfad69' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") 16 16,pointer}
+body{cursor:url("./assets/cursor-key.svg") 32 32,auto}
+a,button,summary,select,[role=button]{cursor:url("./assets/cursor-key-hover.svg") 32 32,pointer}
 input,textarea{cursor:text}input[type=checkbox],input[type=radio]{cursor:pointer}button:disabled{cursor:wait}
 }
 @media(max-width:650px){.routes-hero>picture{height:auto;aspect-ratio:1600/1067}.ambient:after{opacity:.45}.ambient:before{animation-duration:25s}}
 @media(prefers-reduced-motion:reduce){.ambient:before,.ambient:after{animation:none;will-change:auto}}
+
+/* The key brightens over controls; hover lighting follows the amber palette. */
+@media(hover:hover) and (pointer:fine){
+.button,.chip,.view-card,.telegram-link,.menu-toggle{transition:box-shadow .22s,border-color .22s,background .22s,transform .22s}
+.button:hover,.chip:hover,.view-card:hover,.telegram-link:hover,.menu-toggle:hover{box-shadow:0 0 0 1px #dfad6930,0 0 24px #dfad6930;border-color:#e7bc7e}
+.primary:hover{box-shadow:0 0 28px #dfad6955}
+.header nav a:hover,.text-link:hover,.hero-route:hover,.footer a:hover,.faq summary:hover{color:#f0c98e;text-shadow:0 0 14px #dfad6970}
+.car:hover{box-shadow:0 0 30px #dfad691c;border-color:#dfad6980}
+.turntable{cursor:url("./assets/cursor-key.svg") 32 32,grab}
+}
+@media(prefers-reduced-motion:reduce){.button,.chip,.view-card,.telegram-link,.menu-toggle{transition:none}}
