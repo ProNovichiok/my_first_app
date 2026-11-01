@@ -1,4 +1,4 @@
-import {runtime,catalog,api,esc,money,fmt,download,statuses} from './api.js';
+import {runtime,catalog,api,esc,money,fmt,download,statuses} from './api.js?v=4';
 const $=s=>document.querySelector(s);let key='',rows=[],cars=[],ready=false;
 function message(s,error=false){$('#message').textContent=s;$('#message').classList.toggle('error',error);}
 function render(){const term=$('#search').value.trim().toLocaleLowerCase('ru'),status=$('#filter').value;
@@ -15,7 +15,7 @@ $('#reload').addEventListener('click',()=>load().catch(err=>message(err.message,
 $('#search').addEventListener('input',render);$('#filter').addEventListener('change',render);
 document.querySelectorAll('[data-tab]').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('[data-tab]').forEach(x=>x.classList.toggle('selected',x===b));$('#bookings-tab').hidden=b.dataset.tab!=='bookings';$('#fleet-tab').hidden=b.dataset.tab!=='fleet';}));
 $('#report').addEventListener('click',async()=>{try{if(runtime.mode==='demo'){const a=document.createElement('a');a.href='./demo-clients.xlsx';a.download='demo-clients.xlsx';a.click();return;}await download('/api/admin/report','clients.xlsx',key);}catch(err){message(err.message,true);}});
-$('#seed').addEventListener('click',async()=>{try{await api('/api/admin/demo',{method:'POST',data:{},token:key});await load();message('Создан вымышленный пример. Договор и Excel сохранены на компьютере.');}catch(err){message(err.message,true);}});
+$('#seed').addEventListener('click',async()=>{try{await api('/api/admin/demo',{method:'POST',data:{},token:key});await load();message('Создан вымышленный пример. Договор и Excel доступны для скачивания.');}catch(err){message(err.message,true);}});
 $('#rows').addEventListener('click',async e=>{const b=e.target.closest('button');if(!b)return;b.disabled=true;try{
  if(b.dataset.contract)await download('/api/admin/bookings/'+b.dataset.contract+'/contract','contract-'+b.dataset.contract+'.html',key);
  let response;

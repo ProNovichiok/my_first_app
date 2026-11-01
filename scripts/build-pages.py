@@ -11,7 +11,8 @@ for p in source.rglob('*'):
         target=dest/p.relative_to(source)
         target.parent.mkdir(parents=True,exist_ok=True)
         shutil.copy2(p,target)
-(dest/'site-config.json').write_text(json.dumps({'mode':'demo','version':'3.0.0'},ensure_ascii=False),encoding='utf-8')
+service=json.loads((ROOT/'config/service.json').read_text(encoding='utf-8')) if (ROOT/'config/service.json').exists() else {}
+(dest/'site-config.json').write_text(json.dumps({'mode':'server' if service.get('apiBase') else 'demo','version':service.get('version','4.0.0'),'apiBase':service.get('apiBase','')},ensure_ascii=False),encoding='utf-8')
 company=json.loads((ROOT/'config/company.json').read_text(encoding='utf-8'))
 cars=json.loads((ROOT/'config/cars.json').read_text(encoding='utf-8'))
 public_cars=[{k:v for k,v in c.items() if k not in {'vin','plate','sts','insurance'}} for c in cars]

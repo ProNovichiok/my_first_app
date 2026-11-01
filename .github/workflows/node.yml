@@ -1,0 +1,23 @@
+name: Node server tests
+on:
+  push:
+    paths: ['server/**','functions/**','scripts/*.mjs','package*.json','.github/workflows/node.yml','config/**']
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+      - run: npm ci --ignore-scripts --no-audit --no-fund
+      - run: npm test
+      - run: npm run build
+      - uses: actions/upload-artifact@v4
+        with:
+          name: baltic-drive-neon-function
+          path: dist/function.zip

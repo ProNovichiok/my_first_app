@@ -12,3 +12,7 @@ private/
 baltic-drive.jar
 
 asset-originals/
+node_modules/
+dist/
+.neon
+!.env.node.example

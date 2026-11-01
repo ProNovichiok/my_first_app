@@ -7,3 +7,7 @@ private
 baltic-drive.jar
 
 asset-originals/
+node_modules/
+dist/
+.env.node
+.env.node.*

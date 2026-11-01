@@ -1,4 +1,4 @@
-name: Publish demo to GitHub Pages
+name: Publish site to GitHub Pages
 on:
   push:
     branches: [main]
@@ -24,7 +24,7 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
-      - name: Prepare static demo without Node.js
+      - name: Prepare public frontend
         run: python3 scripts/build-pages.py
       - uses: actions/upload-pages-artifact@v3
         with:
