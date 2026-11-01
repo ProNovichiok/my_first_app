@@ -5,7 +5,7 @@
 Кабинет владельца: https://pronovichiok.github.io/my_first_app/admin.html
 API: https://br-dawn-haze-bajuloc6-balticdrive.compute.c-8.eu-central-1.aws.neon.tech
 
-Фронтенд работает на GitHub Pages, сервер и webhook Telegram — в Neon Functions на Node.js 24. Компьютер владельца для работы бота не нужен. Исходники Java сохранены для истории и возможного переноса, но облачная версия их не использует.
+Фронтенд работает на GitHub Pages, сервер и webhook Telegram — в Neon Functions на Node.js 24. Компьютер владельца для работы бота не нужен. Старые версии доступны в истории GitHub; в текущем проекте используется только Node.js.
 
 ## Режим данных
 

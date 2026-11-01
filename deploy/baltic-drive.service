@@ -1,5 +1,5 @@
 [Unit]
-Description=Baltic Drive Java server and Telegram bot
+Description=Baltic Drive Node.js server and Telegram webhook
 After=network-online.target
 Wants=network-online.target
 
@@ -7,14 +7,13 @@ Wants=network-online.target
 Type=simple
 User=rental
 WorkingDirectory=/opt/baltic-drive
-ExecStart=/usr/bin/java -Xms32m -Xmx256m -jar /opt/baltic-drive/baltic-drive.jar
+ExecStart=/usr/bin/node --env-file=/opt/baltic-drive/.env.node /opt/baltic-drive/server/local.mjs
 Restart=on-failure
 RestartSec=10
 UMask=0077
 NoNewPrivileges=true
 PrivateTmp=true
 ProtectSystem=strict
-ReadWritePaths=/opt/baltic-drive/data /opt/baltic-drive/private
 ProtectHome=true
 
 [Install]

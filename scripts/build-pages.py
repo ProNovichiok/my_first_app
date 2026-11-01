@@ -4,7 +4,12 @@ import json, shutil
 ROOT=Path(__file__).resolve().parents[1]
 source=ROOT/'public'
 dest=ROOT/'pages'
-dest.mkdir(exist_ok=True)
+# Recreate the generated directory so removed source files cannot survive deployment.
+if dest.resolve() != ROOT.resolve() / 'pages' or dest.is_symlink():
+    raise RuntimeError('Unexpected Pages output path')
+if dest.exists():
+    shutil.rmtree(dest)
+dest.mkdir()
 # Copy only explicitly public assets; never runtime data or credentials.
 for p in source.rglob('*'):
     if p.is_file() and p.suffix.lower() in {'.html','.css','.js','.svg','.webp','.txt','.json','.xlsx'}:
