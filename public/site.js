@@ -5,4 +5,4 @@ document.querySelectorAll('[data-year]').forEach(el=>el.textContent=new Date().g
 document.addEventListener('visibilitychange',()=>document.documentElement.classList.toggle('page-paused',document.hidden));
 document.querySelectorAll('[data-close]').forEach(el=>el.addEventListener('click',()=>el.closest('dialog')?.close()));
 document.querySelectorAll('dialog').forEach(d=>d.addEventListener('click',e=>{if(e.target===d){const r=d.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)d.close();}}));
-if(document.querySelector('.ambient'))import('./driving-car.js?v=2').catch(()=>{});
+if(document.querySelector('.ambient'))import('./driving-car.js?v=3').catch(()=>{});

@@ -1,3 +1,4 @@
+import {startCarMotion} from './car-motion.js?v=1';
 // Three tiny cars, three original melodies, one shared audio engine.
 const tracks=[
  {id:'sport',name:'Спорт',style:'электро',color:'#8e3948',edge:'#f29b9f',tempo:.19,wave:'triangle',volume:.19,melody:[69,76,81,76,72,76,79,76,67,74,79,74,71,74,77,74,65,72,77,72,69,72,76,72,67,74,79,74,71,74,76,74],roots:[45,43,41,43],chord:[12,19,24],body:'M6 35L18 28L38 26L55 14H75L92 27L109 31L115 40L108 45H12L5 40Z',windows:'M44 26L57 17H73L85 27Z'},
@@ -6,8 +7,9 @@ const tracks=[
 ];
 function carSvg(t){return `<svg class="music-car-shape" viewBox="0 0 120 55" aria-hidden="true"><ellipse cx="62" cy="49" rx="48" ry="3" fill="#0006"/><path d="${t.body}" fill="${t.color}" stroke="${t.edge}" stroke-width="1.5"/><path d="${t.windows}" fill="#0c1a24" stroke="${t.edge}"/><path d="M63 12V24M16 31H30M94 31H109" stroke="${t.edge}" stroke-width="1.5"/><path d="M106 32L113 34" stroke="#ffe6a5" stroke-width="4"/><path d="M8 34H14" stroke="#e27a62" stroke-width="3"/>${[29,92].map(x=>`<g class="music-wheel"><circle cx="${x}" cy="41" r="10" fill="#10191e" stroke="#788f91" stroke-width="2"/><path d="M${x} 35V47M${x-6} 41H${x+6}" stroke="${t.edge}" stroke-width="2"/></g>`).join('')}</svg>`;}
 const road=document.createElement('aside');road.className='music-road';road.setAttribute('aria-label','Музыкальные машинки — выберите свою мелодию');
-road.innerHTML=`<div class="music-road-line" aria-hidden="true"></div><div class="music-car-trip"><div class="music-convoy">${tracks.map(t=>`<button class="music-car" type="button" data-music="${t.id}" aria-label="${t.name} — включить ${t.style}" aria-pressed="false">${carSvg(t)}<span class="music-car-note" aria-hidden="true">♫</span><span class="music-car-hint">${t.name} · ${t.style}</span></button>`).join('')}</div></div><button class="music-stop" type="button" hidden>♫ Выключить музыку</button><span class="sr-only" role="status" aria-live="polite"></span>`;
+road.innerHTML=`<div class="music-road-line" aria-hidden="true"></div>${tracks.map(t=>`<div class="music-car-trip"><button class="music-car" type="button" data-music="${t.id}" aria-label="${t.name} — включить ${t.style}" aria-pressed="false">${carSvg(t)}<span class="music-car-note" aria-hidden="true">♫</span><span class="music-car-hint">${t.name} · ${t.style}</span></button></div>`).join('')}<button class="music-stop" type="button" hidden>♫ Выключить музыку</button><span class="sr-only" role="status" aria-live="polite"></span>`;
 document.body.append(road);
+startCarMotion(road);
 const cars=[...road.querySelectorAll('.music-car')],stop=road.querySelector('.music-stop'),status=road.querySelector('[role=status]');
 let context,master,timer=null,active=null,busy=false,next=0,step=0;
 const voices=new Set(),frequency=n=>440*2**((n-69)/12);
